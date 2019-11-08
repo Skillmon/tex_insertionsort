@@ -1,8 +1,13 @@
 # `insertionsort`: sort lists using a primitive insertionsort
 
-Author        | Jonathan P. Spratte
-License       | [LPPL v1.3c](https://www.latex-project.org//lppl/lppl-1-3c.txt) or later
-Copyright (C) | 2019
+Author
+: Jonathan P. Spratte
+
+License
+: [LPPL v1.3c](https://www.latex-project.org//lppl/lppl-1-3c.txt) or later
+
+Copyright (C)
+: 2019
 
 ## About
 
@@ -106,8 +111,7 @@ The macro should define a macro `\is@C@value` to expand to a valid dimension, as
 the comparison is done using an `\ifdim` test. The list is sorted ascending
 respective of these values.
 
-For example to sort a list of integers, you'd use something like the following
-(or an equivalent but faster definition):
+For example to sort a list of integers, you'd use something like the following:
 
 ```latex
 \long\def\is@C@getvalue#1{%
