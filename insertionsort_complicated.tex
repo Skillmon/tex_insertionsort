@@ -1,0 +1,167 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% insertionsort: sort lists using a primitive insertionsort
+% 
+% Author:     Jonathan P. Spratte
+% License:    LPPL v1.3c or later
+% Copyright:  2019
+% File:       insertionsort_complicated.tex
+%
+%   This file contains the complicated version which is faster for data for
+%   which the sortable values are hard to get  (e.g., vectors for which the
+%   length has to be calculated).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% doubled definition guard>>=
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname insertionsort\endcsname\relax
+\else
+  \expandafter\endinput
+\fi
+%=<<
+
+% eTeX guard>>=
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \errmessage{insertionsort_complicated.tex requires eTeX}
+  \protected\long\def\insertionsortC#1#2%
+    {\errmessage{\string\insertionsortC requires eTeX}}
+  \protected\long\def\InsertionsortC#1#2#3%
+    {\errmessage{\string\InsertionsortC requires eTeX}}
+  \protected\long\expandafter\def\csname is@C@insertionsort\endcsname#1%
+    {%
+      \errmessage
+        {\expandafter\string\csname is@C@insertionsort\endcsname requires eTeX}%
+    }
+  \expandafter\endinput
+\fi
+%=<<
+
+% make at letter>>=
+\expandafter\chardef\csname is@atcatcode\endcsname\catcode`\@
+\catcode`\@=11
+%=<<
+
+\input "insertionsort_shared.tex"
+
+% define a function that extracts the value for which will be sorted from your
+% data structure
+\protected\long\def\is@C@getvalue#1%>>=
+  {%
+    \is@ifdimen{#1}
+      {\def\is@C@value{#1}}
+      {\def\is@C@value{#1pt}}%
+  }%=<<
+\long\def\is@C@ifsmaller#1#2%>>=
+  {%
+    \ifdim#1<#2\relax
+      \is@fi@secondofthree
+    \fi
+    \@secondoftwo
+  }%=<<
+\long\def\is@C@insert@last#1\fi#2\is@qmark#3\is@qstop#4%>>=
+  {%
+    \fi
+    \edef\is@C@sorted{\unexpanded\expandafter{\is@C@sorted{#1}{#4}}}%
+  }%=<<
+\long\def\is@C@insert@place#1#2\is@qmark#3\is@qstop#4%>>=
+  {%
+    \edef\is@C@sorted{\unexpanded\expandafter{\is@C@tmp{#1}{#4}#2}}%
+  }%=<<
+\protected\long\def\is@C@insert@b#1#2#3%>>=
+  {%
+    % #1: new value
+    % #2: next value
+    % #3: next element
+    \ifx\is@qmark#3%
+      \is@C@insert@last{#1}%
+    \fi
+    \is@C@ifsmaller{#1}{#2}%
+      {\is@C@insert@place{#1}{#2}{#3}}%
+      {%
+        \edef\is@C@tmp{\unexpanded\expandafter{\is@C@tmp{#2}{#3}}}%
+        \is@C@insert@b{#1}%
+      }%
+  }%=<<
+\protected\long\def\is@C@insert@a#1#2%>>=
+  {%
+    \def\is@C@tmp{}%
+    \is@C@insert@b{#2}#1\is@qmark\is@qmark\is@qmark\is@qstop
+  }%=<<
+\protected\long\def\is@C@insert#1#2%>>=
+  {%
+    % #1: value in dimen
+    % #2: full element
+    \expandafter\is@C@insert@a\expandafter{\is@C@sorted}{#1}{#2}%
+  }%=<<
+\long\def\is@C@sort#1,%>>=
+  {%
+    \is@ifblank{#1}%
+      {\is@blankelementerror}%
+      {%
+        \ifx\is@qmark#1%
+          \is@fi@gobbleuntilqstop
+        \fi
+        \is@C@getvalue{#1}%
+        \expandafter\is@C@insert\expandafter{\is@C@value}{#1}%
+      }%
+    \is@C@sort
+  }%=<<
+\long\def\is@C@clistize@#1#2%>>=
+  {%
+    \ifx\is@qmark#1%
+      \is@fi@gobbletwo
+    \fi
+    \@firstofone
+    {%
+      \unexpanded{,{#2}}%
+      \is@C@clistize@
+    }%
+  }%=<<
+\long\def\is@C@clistize#1#2%>>=
+  {%
+    \unexpanded{{#2}}%
+    \is@C@clistize@
+  }%=<<
+\protected\long\def\is@C@insertionsort#1%>>=
+  {%
+    \edef\is@C@tmp{\is@getfirst#1,\is@qstop}%
+    \expandafter\is@C@getvalue\expandafter{\is@C@tmp}%
+    \edef\is@C@sorted
+      {%
+        {\unexpanded\expandafter{\is@C@value}}%
+        {\unexpanded\expandafter{\is@C@tmp}}%
+      }%
+    \expandafter\is@C@sort
+      \romannumeral-`0\is@gobblefirst#1,\is@qnil,\is@qmark,\is@qstop
+    \edef\is@C@sorted
+      {\expandafter\is@C@clistize\is@C@sorted\is@qmark\is@qmark}%
+  }%=<<
+\protected\long\def\insertionsortC#1#2%>>=
+  {%
+    \is@ifblank{#2}%
+      {\def#1{}}%
+      {%
+        \begingroup
+          \is@C@insertionsort{#2}%
+        \expandafter
+        \endgroup
+        \expandafter\def\expandafter#1\expandafter{\is@C@sorted}%
+      }%
+  }%=<<
+\protected\long\def\InsertionsortC#1#2#3%>>=
+  {%
+    \is@ifblank{#3}%
+      {\def#2{}}%
+      {%
+        \begingroup
+          \long\def\is@C@getvalue##1{#1}%
+          \is@S@insertionsort{#3}%
+        \expandafter
+        \endgroup
+        \expandafter\def\expandafter#2\expandafter{\is@S@sorted}%
+      }%
+  }%=<<
+
+\catcode`\@=\is@atcatcode

@@ -1,0 +1,63 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% insertionsort: sort lists using a primitive insertionsort
+% 
+% Author:     Jonathan P. Spratte
+% License:    LPPL v1.3c or later
+% Copyright:  2019
+% File:       insertionsort_shared.tex
+%
+%   This file contains macros which are identical in every version of
+%   insertionsort.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\font\is@testfont=cmr10
+
+% messages
+\def\is@blankelementerror%>>=
+  {%
+    % ignore for the time being
+  }%=<<
+
+% define some quarks for testing and delimiting
+\def\is@qnil{\is@qnil}
+\def\is@qmark{\is@qmark}
+\def\is@qstop{\is@qstop}
+
+% define some logic helper functions, those are generally faster than their
+% \expandafter equivalents
+\long\def\is@fi@gobbletwo\fi#1#2{\fi}
+\long\def\is@fi@secondofthree\fi#1#2#3{\fi#2}
+\long\def\is@fi@thirdofthree\fi#1#2#3{\fi#3}
+\long\def\is@fi@gobbleuntilqstop\fi#1\is@qstop{\fi}
+
+% function to get the first value of the clist
+\long\def\is@getfirst#1,#2\is@qstop{\unexpanded{#1}}
+% function to gobble the first value of a clist, call with trailing ',\is@qnil'
+\long\def\is@gobblefirst#1,{\is@gobblefirst@a,}
+% function to remove a trailing ',\is@qnil', call it with leading ','
+\long\def\is@gobblefirst@a#1,\is@qnil{\is@gobblefirst@b#1}
+% remove the leading ',' end the \romannumeral
+\def\is@gobblefirst@b,{ }
+% function to test whether argument is blank
+\long\def\is@ifblank#1%>>=
+  {%
+    \if\relax\detokenize\expandafter{\@gobble #1.}\relax
+      \is@fi@secondofthree
+    \fi
+    \@secondoftwo
+  }%=<<
+% nonexpandable test whether TeX understands a number as a dimension; #1 must be
+% either a number or a dimension
+\protected\long\def\is@ifdimen#1%>>=
+  {%
+    \begingroup
+    \setbox0\hbox{\is@testfont\dimen0=#1pt}%
+    \expandafter
+    \endgroup
+    \ifdim\wd0=\z@
+      \is@fi@thirdofthree
+    \fi
+    \@firstoftwo
+  }%=<<
