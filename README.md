@@ -24,14 +24,16 @@ input. Currently there is no smart binary searching or something like that.
 As of now, I haven't decided on the final implementation, hence two versions are
 provided:
 
-`insertionsort_complicated`
+[`insertionsort_complicated`](#complicated)
 : this version is faster for lists in which each element's value has to
 calculated, e.g., your list contains vectors and you want to sort them by their
 lengths. It uses more tokens in a temporary macro.
 
-`insertionsort_simple`
+[`insertionsort_simple`](#simple)
 : this version is faster for lists in which each element is the value, e.g., a
 list of integers.
+
+You can use both versions in parallel.
 
 ## Short Documentation
 
@@ -41,7 +43,7 @@ list, the macros will output a comma separated list, but each element will be
 wrapped in a pair of braces (so for the input `5,3,4,1` the output will be
 `{1},{3},{4},{5}`), irrespective of whether you braced them in the input or not. 
 
-### Simple Version
+### Simple Version<a name="simple"/>
 
 The macro which needs to be correctly defined is
 
@@ -99,7 +101,7 @@ put something like `\@firstoftwo` or `\@secondoftwo` there (maybe with
 Uses the current definition of `\is@S@ifsmaller` and defines `\is@S@sorted` to
 expand to the sorted list. It does not test for an empty `<list>` argument!
 
-### Complicated Version
+### Complicated Version<a name="complicated"/>
 
 The macro which needs to be correctly defined is
 
@@ -119,7 +121,7 @@ For example to sort a list of integers, you'd use something like the following:
 }
 ```
 
-#### `\insertionsortS`
+#### `\insertionsortC`
 
 ```latex
 \insertionsortC<cs>{<list>}
@@ -128,7 +130,7 @@ For example to sort a list of integers, you'd use something like the following:
 Uses the current definition of `\is@C@getvalue` and defines `<cs>` to expand to
 the sorted list.
 
-#### `\InsertionsortS`
+#### `\InsertionsortC`
 
 ```latex
 \InsertionsortC{<definition>}<cs>{<list>}
@@ -141,7 +143,7 @@ sorted list.
 #### `\is@C@insertionsort`
 
 ```latex
-\is@S@insertionsort{<list>}
+\is@C@insertionsort{<list>}
 ```
 
 Uses the current definition of `\is@C@getvalue` and defines `\is@C@sorted` to
@@ -154,17 +156,28 @@ but with the following macros. In the following examples `\if...` is replaceable
 by any TeX-syntax if-test.
 
 1. If the test is true use the first branch, else the second:
-  ```latex
-  \if...
+    ```latex
+    \if...
+      \is@fi@secondofthree
+    \fi
+    \@secondoftwo
+    ```
+
+1. If the test is true use the second branch, else the first:
+    ```latex
+    \if...
+      \is@fi@thirdofthree
+    \fi
+    \@firstoftwo
+    ```
+
+Example: Define the integer comparison test for `\is@S@ifsmaller` from
+[the simple version](#simple) with these macros:
+
+```latex
+\long\def\is@S@ifsmaller#1#2{%
+  \ifnum#1<#2\relax
     \is@fi@secondofthree
   \fi
   \@secondoftwo
-  ```
-
-1. If the test is true use the second branch, else the first:
-  ```latex
-  \if...
-    \is@fi@thirdofthree
-  \fi
-  \@firstoftwo
-  ```
+```
