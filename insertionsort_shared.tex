@@ -12,6 +12,14 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% doubled definition guard >>=
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname is@testfont\endcsname\relax
+\else
+  \expandafter\endinput
+\fi
+%=<<
+
 \font\is@testfont=cmr10
 
 % messages
