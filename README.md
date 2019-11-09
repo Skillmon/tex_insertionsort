@@ -25,7 +25,7 @@ As of now, I haven't decided on the final implementation, hence two versions are
 provided:
 
 [`insertionsort_complicated`](#complicated)
-: this version is faster for lists in which each element's value has to
+: this version is faster for lists in which each element's value has to be
 calculated, e.g., your list contains vectors and you want to sort them by their
 lengths. It uses more tokens in a temporary macro.
 
@@ -72,6 +72,17 @@ For example to sort a list of integers, you'd use something like the following
 }
 ```
 
+#### Default `\is@S@ifsmaller`
+
+The default definition of `\is@S@ifsmaller` is pretty slow, making this version
+slower than the [complicated one](#complicated). It should work for lists which
+contain integers, floats, or dimensions (even if they are mixed, using `pt` for
+integers and floats), but this flexibility comes at a performance cost. If you
+can guarantee the format of each element to work for a fast test you should
+redefine `\is@S@ifsmaller` to that test (e.g., by using
+[`\InsertionsortS`](#InsertionsortS)) and only then this version is
+(considerably) faster than [its sibling](#complicated).
+
 #### `\insertionsortS`
 
 ```latex
@@ -81,13 +92,13 @@ For example to sort a list of integers, you'd use something like the following
 Uses the current definition of `\is@S@ifsmaller` and defines `<cs>` to expand to
 the sorted list.
 
-#### `\InsertionsortS`
+#### `\InsertionsortS`<a name="InsertionsortS"/>
 
 ```latex
 \InsertionsortS{<definition>}<cs>{<list>}
 ```
 
-Uses `<definition>` for `\is@S@ifsmaller`
+Locally uses `<definition>` for `\is@S@ifsmaller`
 (`\long\def\is@S@ifsmaller#1#2{<definition>}`). *Don't* use `#3` or `#4`, just
 put something like `\@firstoftwo` or `\@secondoftwo` there (maybe with
 `\expandafter`). Defines `<cs>` to expand to the sorted list.
@@ -113,13 +124,24 @@ The macro should define a macro `\is@C@value` to expand to a valid dimension, as
 the comparison is done using an `\ifdim` test. The list is sorted ascending
 respective of these values.
 
-For example to sort a list of integers, you'd use something like the following:
+For example to sort a list of integers and/or floats, you'd use something like
+the following:
 
 ```latex
 \long\def\is@C@getvalue#1{%
   \def\is@C@value{#1pt}%
 }
 ```
+
+#### Default `\is@C@getvalue`
+
+The default definition of `\is@C@getvalue` should work for lists containing
+integers, floats, or dimensions (even if they are mixed), and sets
+`\is@C@value` to a dimension (using `pt` for integers and floats). Each value
+has to be calculated only once, making this version faster than the
+[simple one](#simple) by default, but slower if the value is equal to the
+element (or the conversion is simple, e.g., just appending `pt`) if
+`\is@S@ifsmaller` is well defined.
 
 #### `\insertionsortC`
 
@@ -136,7 +158,7 @@ the sorted list.
 \InsertionsortC{<definition>}<cs>{<list>}
 ```
 
-Uses `<definition>` for `\is@C@getvalue`
+Locally uses `<definition>` for `\is@C@getvalue`
 (`\long\def\is@C@getvalue#1{<definition>}`).  Defines `<cs>` to expand to the
 sorted list.
 
