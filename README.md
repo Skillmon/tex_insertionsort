@@ -74,12 +74,13 @@ For example to sort a list of integers, you'd use something like the following
 
 #### Default `\is@S@ifsmaller`
 
-The default definition of `\is@S@ifsmaller` is pretty slow, making this version
-slower than the [complicated one](#complicated). It should work for lists which
-contain integers, floats, or dimensions (even if they are mixed, using `pt` for
-integers and floats), but this flexibility comes at a performance cost. If you
-can guarantee the format of each element to work for a fast test you should
-redefine `\is@S@ifsmaller` to that test (e.g., by using
+The default definition of `\is@S@ifsmaller` is pretty slow, making this
+version's default slower than the default of the
+[complicated one](#complicated). It should work for lists which contain
+integers, floats, or dimensions (even if they are mixed, using `pt` for integers
+and floats), but this flexibility comes at a performance cost. If you can
+guarantee the format of each element to work for a fast test you should redefine
+`\is@S@ifsmaller` to that test (e.g., by using
 [`\InsertionsortS`](#InsertionsortS)) and only then this version is
 (considerably) faster than [its sibling](#complicated).
 
@@ -141,7 +142,10 @@ integers, floats, or dimensions (even if they are mixed), and sets
 has to be calculated only once, making this version faster than the
 [simple one](#simple) by default, but slower if the value is equal to the
 element (or the conversion is simple, e.g., just appending `pt`) if
-`\is@S@ifsmaller` is well defined.
+`\is@S@ifsmaller` is well defined. Even if you want to use this version on
+simple data (though in that case the [other one](#simple) should be faster) you
+can get much better performance by redefining `\is@C@getvalue` (e.g., by using
+[`\InsertionsortC`](#InsertionsortC)) to reflect this.
 
 #### `\insertionsortC`
 
