@@ -13,7 +13,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% doubled definition guard>>=
+% doubled definition guard >>=
 \begingroup\expandafter\expandafter\expandafter\endgroup
 \expandafter\ifx\csname insertionsort\endcsname\relax
 \else
@@ -21,7 +21,7 @@
 \fi
 %=<<
 
-% eTeX guard>>=
+% eTeX guard >>=
 \begingroup\expandafter\expandafter\expandafter\endgroup
 \expandafter\ifx\csname numexpr\endcsname\relax
   \errmessage{insertionsort_complicated.tex requires eTeX}
@@ -38,7 +38,7 @@
 \fi
 %=<<
 
-% make at letter>>=
+% make at letter >>=
 \expandafter\chardef\csname is@atcatcode\endcsname\catcode`\@
 \catcode`\@=11
 %=<<
