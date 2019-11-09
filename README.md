@@ -41,14 +41,14 @@ Each version has a macro which needs to be defined correctly for the sorting to
 work on the input data's type. The `<list>` input should be a comma separated
 list, the macros will output a comma separated list, but each element will be
 wrapped in a pair of braces (so for the input `5,3,4,1` the output will be
-`{1},{3},{4},{5}`), irrespective of whether you braced them in the input or not. 
+`{1},{3},{4},{5}`), irrespective of whether you braced them in the input or not.
 
 ### Simple Version<a name="simple"/>
 
 The macro which needs to be correctly defined is
 
 ```latex
-\is@S@ifsmaller{<new value>}{<sorted value>}{<place here>}{<try next>}
+\inso@S@ifsmaller{<new value>}{<sorted value>}{<place here>}{<try next>}
 ```
 
 The macro doesn't have to be expandable. All arguments will be provided,
@@ -63,7 +63,7 @@ For example to sort a list of integers, you'd use something like the following
 (or an [equivalent but faster definition](#faster)):
 
 ```latex
-\long\def\is@S@ifsmaller#1#2%
+\long\def\inso@S@ifsmaller#1#2%
   {%
     \ifnum#1<#2\relax
       \expandafter\@firstoftwo
@@ -73,15 +73,15 @@ For example to sort a list of integers, you'd use something like the following
   }
 ```
 
-#### Default `\is@S@ifsmaller`
+#### Default `\inso@S@ifsmaller`
 
-The default definition of `\is@S@ifsmaller` is pretty slow, making this
+The default definition of `\inso@S@ifsmaller` is pretty slow, making this
 version's default slower than the default of the
 [complicated one](#complicated). It should work for lists which contain
 integers, floats, or dimensions (even if they are mixed, using `pt` for integers
 and floats), but this flexibility comes at a performance cost. If you can
 guarantee the format of each element to work for a fast test you should redefine
-`\is@S@ifsmaller` to that test (e.g., by using
+`\inso@S@ifsmaller` to that test (e.g., by using
 [`\InsertionsortS`](#InsertionsortS)) and only then this version is
 (considerably) faster than [its sibling](#complicated).
 
@@ -91,8 +91,8 @@ guarantee the format of each element to work for a fast test you should redefine
 \insertionsortS<cs>{<list>}
 ```
 
-Uses the current definition of `\is@S@ifsmaller` and defines `<cs>` to expand to
-the sorted list.
+Uses the current definition of `\inso@S@ifsmaller` and defines `<cs>` to expand
+to the sorted list.
 
 #### `\InsertionsortS`<a name="InsertionsortS"/>
 
@@ -100,53 +100,53 @@ the sorted list.
 \InsertionsortS{<definition>}<cs>{<list>}
 ```
 
-Locally uses `<definition>` for `\is@S@ifsmaller`
-(`\long\def\is@S@ifsmaller#1#2{<definition>}`). *Don't* use `#3` or `#4`, just
+Locally uses `<definition>` for `\inso@S@ifsmaller`
+(`\long\def\inso@S@ifsmaller#1#2{<definition>}`). *Don't* use `#3` or `#4`, just
 put something like `\@firstoftwo` or `\@secondoftwo` there (maybe with
 `\expandafter`). Defines `<cs>` to expand to the sorted list.
 
-#### `\is@S@insertionsort`
+#### `\inso@S@insertionsort`
 
 ```latex
-\is@S@insertionsort{<list>}
+\inso@S@insertionsort{<list>}
 ```
 
-Uses the current definition of `\is@S@ifsmaller` and defines `\is@S@sorted` to
-expand to the sorted list. It does not test for an empty `<list>` argument!
+Uses the current definition of `\inso@S@ifsmaller` and defines `\inso@S@sorted`
+to expand to the sorted list. It does not test for an empty `<list>` argument!
 
 ### Complicated Version<a name="complicated"/>
 
 The macro which needs to be correctly defined is
 
 ```latex
-\is@C@getvalue{<element>}
+\inso@C@getvalue{<element>}
 ```
 
-The macro should define a macro `\is@C@value` to expand to a valid dimension, as
-the comparison is done using an `\ifdim` test. The list is sorted ascending
+The macro should define a macro `\inso@C@value` to expand to a valid dimension,
+as the comparison is done using an `\ifdim` test. The list is sorted ascending
 respective of these values.
 
 For example to sort a list of integers and/or floats, you'd use something like
 the following:
 
 ```latex
-\long\def\is@C@getvalue#1%
+\long\def\inso@C@getvalue#1%
   {%
-    \def\is@C@value{#1pt}%
+    \def\inso@C@value{#1pt}%
   }
 ```
 
-#### Default `\is@C@getvalue`
+#### Default `\inso@C@getvalue`
 
-The default definition of `\is@C@getvalue` should work for lists containing
+The default definition of `\inso@C@getvalue` should work for lists containing
 integers, floats, or dimensions (even if they are mixed), and sets
-`\is@C@value` to a dimension (using `pt` for integers and floats). Each value
+`\inso@C@value` to a dimension (using `pt` for integers and floats). Each value
 has to be calculated only once, making this version faster than the
 [simple one](#simple) by default, but slower if the value is equal to the
 element (or the conversion is simple, e.g., just appending `pt`) if
-`\is@S@ifsmaller` is well defined. Even if you want to use this version on
+`\inso@S@ifsmaller` is well defined. Even if you want to use this version on
 simple data (though in that case the [other one](#simple) should be faster) you
-can get much better performance by redefining `\is@C@getvalue` (e.g., by using
+can get much better performance by redefining `\inso@C@getvalue` (e.g., by using
 [`\InsertionsortC`](#InsertionsortC)) to reflect this.
 
 #### `\insertionsortC`
@@ -155,8 +155,8 @@ can get much better performance by redefining `\is@C@getvalue` (e.g., by using
 \insertionsortC<cs>{<list>}
 ```
 
-Uses the current definition of `\is@C@getvalue` and defines `<cs>` to expand to
-the sorted list.
+Uses the current definition of `\inso@C@getvalue` and defines `<cs>` to expand
+to the sorted list.
 
 #### `\InsertionsortC`
 
@@ -164,18 +164,18 @@ the sorted list.
 \InsertionsortC{<definition>}<cs>{<list>}
 ```
 
-Locally uses `<definition>` for `\is@C@getvalue`
-(`\long\def\is@C@getvalue#1{<definition>}`).  Defines `<cs>` to expand to the
+Locally uses `<definition>` for `\inso@C@getvalue`
+(`\long\def\inso@C@getvalue#1{<definition>}`).  Defines `<cs>` to expand to the
 sorted list.
 
-#### `\is@C@insertionsort`
+#### `\inso@C@insertionsort`
 
 ```latex
-\is@C@insertionsort{<list>}
+\inso@C@insertionsort{<list>}
 ```
 
-Uses the current definition of `\is@C@getvalue` and defines `\is@C@sorted` to
-expand to the sorted list. It does not test for an empty `<list>` argument!
+Uses the current definition of `\inso@C@getvalue` and defines `\inso@C@sorted`
+to expand to the sorted list. It does not test for an empty `<list>` argument!
 
 ### Miscellaneous
 
@@ -188,7 +188,7 @@ by any TeX-syntax if-test.
 1. If the test is true use the first branch, else the second:
     ```latex
     \if...
-      \is@fi@secondofthree
+      \inso@fi@secondofthree
     \fi
     \@secondoftwo
     ```
@@ -196,19 +196,19 @@ by any TeX-syntax if-test.
 1. If the test is true use the second branch, else the first:
     ```latex
     \if...
-      \is@fi@thirdofthree
+      \inso@fi@thirdofthree
     \fi
     \@firstoftwo
     ```
 
-Example: Define the integer comparison test for `\is@S@ifsmaller` from
+Example: Define the integer comparison test for `\inso@S@ifsmaller` from
 [the simple version](#simple) with these macros:
 
 ```latex
-\long\def\is@S@ifsmaller#1#2%
+\long\def\inso@S@ifsmaller#1#2%
   {%
     \ifnum#1<#2\relax
-      \is@fi@secondofthree
+      \inso@fi@secondofthree
     \fi
     \@secondoftwo
   }

@@ -29,136 +29,139 @@
     {\errmessage{\string\insertionsortS requires eTeX}}
   \protected\long\def\InsertionsortS#1#2#3%
     {\errmessage{\string\InsertionsortS requires eTeX}}
-  \protected\long\expandafter\def\csname is@S@insertionsort\endcsname#1%
+  \protected\long\expandafter\def\csname inso@S@insertionsort\endcsname#1%
     {%
       \errmessage
-        {\expandafter\string\csname is@S@insertionsort\endcsname requires eTeX}%
+        {%
+          \expandafter\string\csname inso@S@insertionsort\endcsname requires
+          eTeX%
+        }%
     }
   \expandafter\endinput
 \fi
 %=<<
 
 % make at letter >>=
-\expandafter\chardef\csname is@atcatcode\endcsname\catcode`\@
+\expandafter\chardef\csname inso@atcatcode\endcsname\catcode`\@
 \catcode`\@=11
 %=<<
 
 \input "insertionsort_shared.tex"
 
-\long\def\is@S@ifsmaller@#1#2%>>=
+\long\def\inso@S@ifsmaller@#1#2%>>=
   {%
     \ifdim#1<#2\relax
-      \is@fi@secondofthree
+      \inso@fi@secondofthree
     \fi
-    \@secondoftwo
+    \inso@secondoftwo
   }%=<<
-\protected\long\def\is@S@ifsmaller#1#2%>>=
+\protected\long\def\inso@S@ifsmaller#1#2%>>=
   {%
-    \is@ifdimen{#2}
+    \inso@ifdimen{#2}
       {%
-        \is@ifdimen{#1}
-          {\is@S@ifsmaller@{#1}}
-          {\is@S@ifsmaller@{#1pt}}%
+        \inso@ifdimen{#1}
+          {\inso@S@ifsmaller@{#1}}
+          {\inso@S@ifsmaller@{#1pt}}%
         {#2}%
       }
       {%
-        \is@ifdimen{#1}
-          {\is@S@ifsmaller@{#1}}
-          {\is@S@ifsmaller@{#1pt}}%
+        \inso@ifdimen{#1}
+          {\inso@S@ifsmaller@{#1}}
+          {\inso@S@ifsmaller@{#1pt}}%
         {#2pt}%
       }%
   }%=<<
-\long\def\is@S@insert@last#1\fi#2\is@qmark#3\is@qstop%>>=
+\long\def\inso@S@insert@last#1\fi#2\inso@qmark#3\inso@qstop%>>=
   {%
     \fi
-    \edef\is@S@sorted{\unexpanded\expandafter{\is@S@sorted{#1}}}%
+    \edef\inso@S@sorted{\unexpanded\expandafter{\inso@S@sorted{#1}}}%
   }%=<<
-\long\def\is@S@insert@place#1#2\is@qmark#3\is@qstop%>>=
+\long\def\inso@S@insert@place#1#2\inso@qmark#3\inso@qstop%>>=
   {%
-    \edef\is@S@sorted
+    \edef\inso@S@sorted
       {%
-        \unexpanded\expandafter{\is@S@tmp{#1}}%
-        \unexpanded\expandafter{\@gobble#2}%
+        \unexpanded\expandafter{\inso@S@tmp{#1}}%
+        \unexpanded\expandafter{\inso@gobble#2}%
       }%
   }%=<<
-\protected\long\def\is@S@insert@a#1#2%>>=
+\protected\long\def\inso@S@insert@a#1#2%>>=
   {%
     % #1: new value
     % #2: next value
-    \ifx\is@qmark#2%
-      \is@S@insert@last{#1}%
+    \ifx\inso@qmark#2%
+      \inso@S@insert@last{#1}%
     \fi
-    \is@S@ifsmaller{#1}{#2}%
-      {\is@S@insert@place{#1}.{#2}}%
+    \inso@S@ifsmaller{#1}{#2}%
+      {\inso@S@insert@place{#1}.{#2}}%
       {%
-        \edef\is@S@tmp{\unexpanded\expandafter{\is@S@tmp{#2}}}%
-        \is@S@insert@a{#1}%
+        \edef\inso@S@tmp{\unexpanded\expandafter{\inso@S@tmp{#2}}}%
+        \inso@S@insert@a{#1}%
       }%
   }%=<<
-\protected\long\def\is@S@insert#1#2%>>=
+\protected\long\def\inso@S@insert#1#2%>>=
   {%
-    \def\is@S@tmp{}%
-    \is@S@insert@a{#2}#1\is@qmark\is@qmark\is@qmark\is@qstop
+    \def\inso@S@tmp{}%
+    \inso@S@insert@a{#2}#1\inso@qmark\inso@qmark\inso@qmark\inso@qstop
   }%=<<
-\long\def\is@S@sort#1,%>>=
+\long\def\inso@S@sort#1,%>>=
   {%
-    \is@ifblank{#1}%
-      {\is@blankelementerror}%
+    \inso@ifblank{#1}%
+      {\inso@blankelementerror}%
       {%
-        \ifx\is@qmark#1%
-          \is@fi@gobbleuntilqstop
+        \ifx\inso@qmark#1%
+          \inso@fi@gobbleuntilqstop
         \fi
-        \expandafter\is@S@insert\expandafter{\is@S@sorted}{#1}%
+        \expandafter\inso@S@insert\expandafter{\inso@S@sorted}{#1}%
       }%
-    \is@S@sort
+    \inso@S@sort
   }%=<<
-\long\def\is@S@clistize@#1%>>=
+\long\def\inso@S@clistize@#1%>>=
   {%
-    \ifx\is@qmark#1%
-      \is@fi@gobbletwo
+    \ifx\inso@qmark#1%
+      \inso@fi@gobbletwo
     \fi
-    \@firstofone
+    \inso@firstofone
     {%
       \unexpanded{,{#1}}%
-      \is@S@clistize@
+      \inso@S@clistize@
     }%
   }%=<<
-\long\def\is@S@clistize#1%>>=
+\long\def\inso@S@clistize#1%>>=
   {%
     \unexpanded{{#1}}%
-    \is@S@clistize@
+    \inso@S@clistize@
   }%=<<
-\protected\long\def\is@S@insertionsort#1%>>=
+\protected\long\def\inso@S@insertionsort#1%>>=
   {%
-    \edef\is@S@sorted{{\is@getfirst#1,\is@qstop}}%
-    \expandafter
-    \is@S@sort\romannumeral-`0\is@gobblefirst#1,\is@qnil,\is@qmark,\is@qstop
-    \edef\is@S@sorted{\expandafter\is@S@clistize\is@S@sorted\is@qmark}%
+    \edef\inso@S@sorted{{\inso@getfirst#1,\inso@qstop}}%
+    \expandafter\inso@S@sort
+      \romannumeral-`0\inso@gobblefirst#1,\inso@qnil,\inso@qmark,\inso@qstop
+    \edef\inso@S@sorted{\expandafter\inso@S@clistize\inso@S@sorted\inso@qmark}%
   }%=<<
 \protected\long\def\insertionsortS#1#2%>>=
   {%
-    \is@ifblank{#2}%
+    \inso@ifblank{#2}%
       {\def#1{}}%
       {%
         \begingroup
-          \is@S@insertionsort{#2}%
+          \inso@S@insertionsort{#2}%
         \expandafter
         \endgroup
-        \expandafter\def\expandafter#1\expandafter{\is@S@sorted}%
+        \expandafter\def\expandafter#1\expandafter{\inso@S@sorted}%
       }%
   }%=<<
 \protected\long\def\InsertionsortS#1#2#3%>>=
   {%
-    \is@ifblank{#3}%
+    \inso@ifblank{#3}%
       {\def#2{}}%
       {%
         \begingroup
-          \long\def\is@S@ifsmaller##1##2{#1}%
-          \is@S@insertionsort{#3}%
+          \long\def\inso@S@ifsmaller##1##2{#1}%
+          \inso@S@insertionsort{#3}%
         \expandafter
         \endgroup
-        \expandafter\def\expandafter#2\expandafter{\is@S@sorted}%
+        \expandafter\def\expandafter#2\expandafter{\inso@S@sorted}%
       }%
   }%=<<
 
-\catcode`\@=\is@atcatcode
+\catcode`\@=\inso@atcatcode

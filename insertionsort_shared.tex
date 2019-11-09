@@ -14,58 +14,64 @@
 
 % doubled definition guard >>=
 \begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname is@testfont\endcsname\relax
+\expandafter\ifx\csname inso@testfont\endcsname\relax
 \else
   \expandafter\endinput
 \fi
 %=<<
 
-\font\is@testfont=cmr10
+\font\inso@testfont=cmr10
 
 % messages
-\def\is@blankelementerror%>>=
+\def\inso@blankelementerror%>>=
   {%
     % ignore for the time being
   }%=<<
 
 % define some quarks for testing and delimiting
-\def\is@qnil{\is@qnil}
-\def\is@qmark{\is@qmark}
-\def\is@qstop{\is@qstop}
+\def\inso@qnil{\inso@qnil}
+\def\inso@qmark{\inso@qmark}
+\def\inso@qstop{\inso@qstop}
+
+% define the latex equivalents of some small things
+\long\def\inso@gobble#1{}
+\long\def\inso@firstoftwo#1#2{#1}
+\long\def\inso@secondoftwo#1#2{#2}
+\newdimen\inso@z@ \inso@z@0pt
 
 % define some logic helper functions, those are generally faster than their
 % \expandafter equivalents
-\long\def\is@fi@gobbletwo\fi#1#2{\fi}
-\long\def\is@fi@secondofthree\fi#1#2#3{\fi#2}
-\long\def\is@fi@thirdofthree\fi#1#2#3{\fi#3}
-\long\def\is@fi@gobbleuntilqstop\fi#1\is@qstop{\fi}
+\long\def\inso@fi@gobbletwo\fi#1#2{\fi}
+\long\def\inso@fi@secondofthree\fi#1#2#3{\fi#2}
+\long\def\inso@fi@thirdofthree\fi#1#2#3{\fi#3}
+\long\def\inso@fi@gobbleuntilqstop\fi#1\inso@qstop{\fi}
 
 % function to get the first value of the clist
-\long\def\is@getfirst#1,#2\is@qstop{\unexpanded{#1}}
-% function to gobble the first value of a clist, call with trailing ',\is@qnil'
-\long\def\is@gobblefirst#1,{\is@gobblefirst@a,}
-% function to remove a trailing ',\is@qnil', call it with leading ','
-\long\def\is@gobblefirst@a#1,\is@qnil{\is@gobblefirst@b#1}
+\long\def\inso@getfirst#1,#2\inso@qstop{\unexpanded{#1}}
+% function to gobble the first value of clist, call with trailing ',\inso@qnil'
+\long\def\inso@gobblefirst#1,{\inso@gobblefirst@a,}
+% function to remove a trailing ',\inso@qnil', call it with leading ','
+\long\def\inso@gobblefirst@a#1,\inso@qnil{\inso@gobblefirst@b#1}
 % remove the leading ',' end the \romannumeral
-\def\is@gobblefirst@b,{ }
+\def\inso@gobblefirst@b,{ }
 % function to test whether argument is blank
-\long\def\is@ifblank#1%>>=
+\long\def\inso@ifblank#1%>>=
   {%
-    \if\relax\detokenize\expandafter{\@gobble #1.}\relax
-      \is@fi@secondofthree
+    \if\relax\detokenize\expandafter{\inso@gobble #1.}\relax
+      \inso@fi@secondofthree
     \fi
-    \@secondoftwo
+    \inso@secondoftwo
   }%=<<
 % nonexpandable test whether TeX understands a number as a dimension; #1 must be
 % either a number or a dimension
-\protected\long\def\is@ifdimen#1%>>=
+\protected\long\def\inso@ifdimen#1%>>=
   {%
     \begingroup
-    \setbox0\hbox{\is@testfont\dimen0=#1pt}%
+    \setbox0\hbox{\inso@testfont\dimen0=#1pt}%
     \expandafter
     \endgroup
-    \ifdim\wd0=\z@
-      \is@fi@thirdofthree
+    \ifdim\wd0=\inso@z@
+      \inso@fi@thirdofthree
     \fi
-    \@firstoftwo
+    \inso@firstoftwo
   }%=<<
