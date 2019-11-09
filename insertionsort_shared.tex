@@ -14,13 +14,13 @@
 
 % doubled definition guard >>=
 \begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname inso@testfont\endcsname\relax
+\expandafter\ifx\csname inso@unit\endcsname\relax
 \else
   \expandafter\endinput
 \fi
 %=<<
 
-\font\inso@testfont=cmr10
+\newdimen\inso@unit \inso@unit=1pt
 
 % messages
 \def\inso@blankelementerror%>>=
@@ -62,16 +62,18 @@
     \fi
     \inso@secondoftwo
   }%=<<
-% nonexpandable test whether TeX understands a number as a dimension; #1 must be
-% either a number or a dimension
-\protected\long\def\inso@ifdimen#1%>>=
+% redefine \inso@unit locally to expand to the true-branch of ifdimen
+\def\inso@ifdimen@letunittrue{\let\inso@unit\inso@ifdimen@true}
+% execute the true branch of ifdimen
+\long\def\inso@ifdimen@true\inso@ifdimen@false#1#2{\endgroup#1}
+% execute the false branch of ifdimen
+\long\def\inso@ifdimen@false#1#2{\endgroup#2}
+% non-expandable test whether TeX understands something as a dimension; #1 must
+% be either a number or a dimension
+\protected\long\def\inso@ifdimen#1%
   {%
     \begingroup
-    \setbox0\hbox{\inso@testfont\dimen0=#1pt}%
-    \expandafter
-    \endgroup
-    \ifdim\wd0=\inso@z@
-      \inso@fi@thirdofthree
-    \fi
-    \inso@firstoftwo
-  }%=<<
+    \afterassignment\inso@ifdimen@letunittrue
+    \inso@unit #1\inso@unit
+    \inso@ifdimen@false
+  }
