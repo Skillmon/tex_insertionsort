@@ -24,14 +24,17 @@ input. Currently there is no smart binary searching or something like that.
 As of now, I haven't decided on the final implementation, hence two versions are
 provided:
 
+[`insertionsort_simple`](#simple)
+: this version is faster for lists in which each element is the value, e.g., a
+list of integers.
+
 [`insertionsort_complicated`](#complicated)
 : this version is faster for lists in which each element's value has to be
 calculated, e.g., your list contains vectors and you want to sort them by their
 lengths. It uses more tokens in a temporary macro.
 
-[`insertionsort_simple`](#simple)
-: this version is faster for lists in which each element is the value, e.g., a
-list of integers.
+For a bit more about which version is faster, see
+[Speed Considerations](#speed).
 
 You can use both versions in parallel.
 
@@ -73,7 +76,7 @@ For example to sort a list of integers, you'd use something like the following
   }
 ```
 
-#### Default `\inso@S@ifsmaller`
+#### Default `\inso@S@ifsmaller`<a name="defsimp"/>
 
 The default definition of `\inso@S@ifsmaller` is pretty slow, making this
 version's default slower than the default of the
@@ -136,7 +139,7 @@ the following:
   }
 ```
 
-#### Default `\inso@C@getvalue`
+#### Default `\inso@C@getvalue`<a name="defcomp"/>
 
 The default definition of `\inso@C@getvalue` should work for lists containing
 integers, floats, or dimensions (even if they are mixed), and sets
@@ -218,3 +221,33 @@ Example: Define the integer comparison test for `\inso@S@ifsmaller` from
     \@secondoftwo
   }
 ```
+
+#### Speed Considerations<a name="speed"/>
+
+In the descriptions of the defaults of [`\inso@S@ifsmaller`](#defsimp) and
+[`\inso@C@getvalue`](#defcomp) I gave a bit of information about which version
+should be faster. The truth is, since the [complicated version](#complicated)
+roughly doubles the tokens read and saved during the sorting, it gets slower for
+large lists and it is slower for really small lists. For random integer arrays
+but with the defaults of both versions the [simple version](#simple) is faster
+for arrays of 5 or fewer elements. In the range 10 to 80 elements the
+[complicated version](#complicated) is faster, but somewhere between 80 and 160
+elements the [simple one](#simple) overtakes again.
+
+Generally the algorithm has a runtime of $O(n^2)$, so the performance gets
+significantly worse for big arrays, also, since the way the data is handled
+(saving in a macro, having TeX reread it each iteration in the process),
+this implementation has even worse performance.
+
+But for small lists the performance is pretty good, outperforming the sort
+algorithm of `lambda.sty` (as long as the input is not an already sorted list,
+and having the drawback of not being expandable)
+and even performing comparable to the mergesort of `l3sort`. To be more precise
+for random integer input this implementation should be faster than `l3sort` for
+up to 40 elements on average. To be fair, I should note that I compared
+`l3sort`'s performance with `\clist_set:Nn` and `\clist_sort:Nn`, which also
+sanitizes the input and removes leading and trailing spaces. If both can assume
+well-stated input (so don't have to clean the input, in the case of `l3sort` not
+using `\clist_set:Nn`), still being faster for up to 20 elements, with `l3sort`
+becoming faster somewhere between 20 and 40, and still being in the same
+order of magnitude for 40 elements.
