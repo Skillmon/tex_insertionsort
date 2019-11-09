@@ -61,14 +61,14 @@
       {%
         \inso@ifdimen{#1}
           {\inso@S@ifsmaller@{#1}}
-          {\inso@S@ifsmaller@{#1pt}}%
+          {\inso@S@ifsmaller@{#1\inso@unit}}%
         {#2}%
       }
       {%
         \inso@ifdimen{#1}
           {\inso@S@ifsmaller@{#1}}
-          {\inso@S@ifsmaller@{#1pt}}%
-        {#2pt}%
+          {\inso@S@ifsmaller@{#1\inso@unit}}%
+        {#2\inso@unit}%
       }%
   }%=<<
 \long\def\inso@S@insert@last#1\fi#2\inso@qmark#3\inso@qstop%>>=

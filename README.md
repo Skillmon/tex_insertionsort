@@ -78,10 +78,10 @@ For example to sort a list of integers, you'd use something like the following
 The default definition of `\inso@S@ifsmaller` is pretty slow, making this
 version's default slower than the default of the
 [complicated one](#complicated). It should work for lists which contain
-integers, floats, or dimensions (even if they are mixed, using `pt` for integers
-and floats), but this flexibility comes at a performance cost. If you can
-guarantee the format of each element to work for a fast test you should redefine
-`\inso@S@ifsmaller` to that test (e.g., by using
+integers, floats, or dimensions (even if they are mixed, using multiples of the
+dimen `\inso@unit` for integers and floats), but this flexibility comes at a
+performance cost. If you can guarantee the format of each element to work for a
+fast test you should redefine `\inso@S@ifsmaller` to that test (e.g., by using
 [`\InsertionsortS`](#InsertionsortS)) and only then this version is
 (considerably) faster than [its sibling](#complicated).
 
@@ -140,14 +140,14 @@ the following:
 
 The default definition of `\inso@C@getvalue` should work for lists containing
 integers, floats, or dimensions (even if they are mixed), and sets
-`\inso@C@value` to a dimension (using `pt` for integers and floats). Each value
-has to be calculated only once, making this version faster than the
-[simple one](#simple) by default, but slower if the value is equal to the
-element (or the conversion is simple, e.g., just appending `pt`) if
-`\inso@S@ifsmaller` is well defined. Even if you want to use this version on
-simple data (though in that case the [other one](#simple) should be faster) you
-can get much better performance by redefining `\inso@C@getvalue` (e.g., by using
-[`\InsertionsortC`](#InsertionsortC)) to reflect this.
+`\inso@C@value` to a dimension (using multiples of the dimen `\inso@unit` for
+integers and floats). Each value has to be calculated only once, making this
+version faster than the [simple one](#simple) by default, but slower if the
+value is equal to the element (or the conversion is simple, e.g., just appending
+`pt`) if `\inso@S@ifsmaller` is well defined. Even if you want to use this
+version on simple data (though in that case the [other one](#simple) should be
+faster) you can get much better performance by redefining `\inso@C@getvalue`
+(e.g., by using [`\InsertionsortC`](#InsertionsortC)) to reflect this.
 
 #### `\insertionsortC`
 
@@ -178,6 +178,11 @@ Uses the current definition of `\inso@C@getvalue` and defines `\inso@C@sorted`
 to expand to the sorted list. It does not test for an empty `<list>` argument!
 
 ### Miscellaneous
+
+The dimen `\inso@unit` is used to convert integers and floats into dimensions in
+the defaults of `\inso@C@getvalue` and `\inso@S@ifsmaller`. You might change its
+value (e.g., `\inso@unit=2pt`), but don't redefine it, it is important that
+`\inso@unit` is a dimen. The default is `\inso@unit=1pt`.
 
 #### Faster Branching Tests<a name="faster"/>
 
