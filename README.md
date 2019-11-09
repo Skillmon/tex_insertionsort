@@ -63,13 +63,14 @@ For example to sort a list of integers, you'd use something like the following
 (or an [equivalent but faster definition](#faster)):
 
 ```latex
-\long\def\is@S@ifsmaller#1#2{%
-  \ifnum#1<#2\relax
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-  \fi
-}
+\long\def\is@S@ifsmaller#1#2%
+  {%
+    \ifnum#1<#2\relax
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }
 ```
 
 #### Default `\is@S@ifsmaller`
@@ -129,9 +130,10 @@ For example to sort a list of integers and/or floats, you'd use something like
 the following:
 
 ```latex
-\long\def\is@C@getvalue#1{%
-  \def\is@C@value{#1pt}%
-}
+\long\def\is@C@getvalue#1%
+  {%
+    \def\is@C@value{#1pt}%
+  }
 ```
 
 #### Default `\is@C@getvalue`
@@ -203,9 +205,11 @@ Example: Define the integer comparison test for `\is@S@ifsmaller` from
 [the simple version](#simple) with these macros:
 
 ```latex
-\long\def\is@S@ifsmaller#1#2{%
-  \ifnum#1<#2\relax
-    \is@fi@secondofthree
-  \fi
-  \@secondoftwo
+\long\def\is@S@ifsmaller#1#2%
+  {%
+    \ifnum#1<#2\relax
+      \is@fi@secondofthree
+    \fi
+    \@secondoftwo
+  }
 ```
