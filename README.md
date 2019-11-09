@@ -60,7 +60,7 @@ Both `<place here>` and `<try next>` shouldn't be inside any group or
 if-else-construct.
 
 For example to sort a list of integers, you'd use something like the following
-(or an equivalent but faster definition):
+(or an [equivalent but faster definition](#faster)):
 
 ```latex
 \long\def\is@S@ifsmaller#1#2{%
@@ -176,6 +176,8 @@ Uses the current definition of `\is@C@getvalue` and defines `\is@C@sorted` to
 expand to the sorted list. It does not test for an empty `<list>` argument!
 
 ### Miscellaneous
+
+#### Faster Branching Tests<a name="faster"/>
 
 One can define slightly faster branching if-tests without using `\expandafter`
 but with the following macros. In the following examples `\if...` is replaceable
