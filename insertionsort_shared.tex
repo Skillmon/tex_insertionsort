@@ -12,12 +12,9 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% doubled definition guard >>=
-\begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname inso@unit\endcsname\relax
-\else
-  \expandafter\endinput
-\fi
+% doubled input guard >>=
+\csname inso@endinput\endcsname
+\expandafter\let\csname inso@endinput\endcsname\endinput
 %=<<
 
 \newdimen\inso@unit \inso@unit=1pt

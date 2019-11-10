@@ -13,30 +13,34 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% doubled definition guard >>=
-\begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname insertionsort\endcsname\relax
-\else
-  \expandafter\endinput
-\fi
+% doubled input guard >>=
+\csname inso@C@endinput\endcsname
+\expandafter\let\csname inso@C@endinput\endcsname\endinput
 %=<<
 
 % eTeX guard >>=
 \begingroup\expandafter\expandafter\expandafter\endgroup
 \expandafter\ifx\csname numexpr\endcsname\relax
   \errmessage{insertionsort_complicated.tex requires eTeX}
-  \protected\long\def\insertionsortC#1#2%
-    {\errmessage{\string\insertionsortC requires eTeX}}
-  \protected\long\def\InsertionsortC#1#2#3%
-    {\errmessage{\string\InsertionsortC requires eTeX}}
-  \protected\long\expandafter\def\csname inso@C@insertionsort\endcsname#1%
+  \begingroup
+  \def\tmp#1%
     {%
-      \errmessage
+      \endgroup
+      \protected\long\edef\insertionsortC##1##2%
+        {\errmessage{Error: \string\insertionsortC#1requires eTeX}}%
+      \protected\long\edef\InsertionsortC##1##2##3%
+        {\errmessage{Error: \string\InsertionsortC#1requires eTeX}}%
+      \protected\long\expandafter\edef\csname inso@C@insertionsort\endcsname##1%
         {%
-          \expandafter\string\csname inso@C@insertionsort\endcsname requires
-          eTeX%
+          \errmessage
+            {%
+              Error:
+              \expandafter\string\csname inso@C@insertionsort\endcsname#1%
+              requires eTeX%
+            }%
         }%
-    }
+    }%
+  \tmp{ }%
   \expandafter\endinput
 \fi
 %=<<
