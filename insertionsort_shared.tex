@@ -21,6 +21,8 @@
 %=<<
 
 \newdimen\inso@unit \inso@unit=1pt
+\newdimen\inso@gobbledimen
+\newdimen\inso@z@
 
 % messages
 \def\inso@blankelementerror%>>=
@@ -62,18 +64,20 @@
     \fi
     \inso@secondoftwo
   }%=<<
-% redefine \inso@unit locally to expand to the true-branch of ifdimen
-\def\inso@ifdimen@letunittrue{\let\inso@unit\inso@ifdimen@true}
-% execute the true branch of ifdimen
-\long\def\inso@ifdimen@true\inso@ifdimen@false#1#2{\endgroup#1}
-% execute the false branch of ifdimen
-\long\def\inso@ifdimen@false#1#2{\endgroup#2}
+% Test which case of \inso@ifdimen should be applied.
+%  1. If the argument to \inso@ifdimen is a dimension:
+%     #1=\inso@ifdimen@false, #2=<true>, #3=<false>
+%  2. If the argument to \inso@ifdimen is an integer or float:
+%     #1=., #2=<false>, #3=.
+\long\def\inso@ifdimen@test#1#2#3{#2}
+% this will only be expanded if the argument of \inso@ifdimen is no dimen, if so
+% provide a unit and rearrange the branches so that the false branch will be
+% called by \inso@ifdimen@test
+\long\def\inso@ifdimen@false#1#2{\inso@z@.{#2}.}
 % non-expandable test whether TeX understands something as a dimension; #1 must
 % be either a number or a dimension
 \protected\long\def\inso@ifdimen#1%
   {%
-    \begingroup
-    \afterassignment\inso@ifdimen@letunittrue
-    \inso@unit #1\inso@unit
-    \inso@ifdimen@false
+    \afterassignment\inso@ifdimen@test
+    \inso@gobbledimen #1 \inso@ifdimen@false
   }
