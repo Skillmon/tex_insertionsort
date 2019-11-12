@@ -46,6 +46,13 @@ list, the macros will output a comma separated list, but each element will be
 wrapped in a pair of braces (so for the input `5,3,4,1` the output will be
 `{1},{3},{4},{5}`), irrespective of whether you braced them in the input or not.
 
+In both versions the defaults of those two macros
+([`\inso@S@ifsmaller`](#defsimp) and [`\inso@C@getvalue`](#defcomp)) take care
+that you can sort lists of integers, floats, and dimensions, even if you mix
+those, but the test to achieve this flexibility is optimized to be fast, not to
+be rock-stable, so input which is neither of those will most likely throw errors
+or in the worst case might break things and produce erroneous output.
+
 ### Simple Version<a name="simple"/>
 
 The macro which needs to be correctly defined is
