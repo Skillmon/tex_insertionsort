@@ -55,11 +55,11 @@
 \long\def\inso@S@ifsmaller@#1#2%>>=
   {%
     \ifdim#1<#2\relax
-      \inso@fi@secondofthree
+      \inso@fi@firstoftwo
     \fi
     \inso@secondoftwo
   }%=<<
-\protected\long\def\inso@S@ifsmaller#1#2%>>=
+\long\def\inso@S@ifsmaller#1#2%>>=
   {%
     \inso@ifdimen{#2}
       {%
@@ -75,12 +75,12 @@
         {#2\inso@unit}%
       }%
   }%=<<
-\long\def\inso@S@insert@last#1\fi#2\inso@qmark#3\inso@qstop%>>=
+\long\def\inso@S@insert@last#1\fi#2\inso@qstop%>>=
   {%
     \fi
     \edef\inso@S@sorted{\unexpanded\expandafter{\inso@S@sorted{#1}}}%
   }%=<<
-\long\def\inso@S@insert@place#1#2\inso@qmark#3\inso@qstop%>>=
+\long\def\inso@S@insert@place#1#2\inso@qmark\inso@qstop%>>=
   {%
     \edef\inso@S@sorted
       {%
@@ -88,7 +88,7 @@
         \unexpanded\expandafter{\inso@gobble#2}%
       }%
   }%=<<
-\protected\long\def\inso@S@insert@a#1#2%>>=
+\long\def\inso@S@insert@a#1#2%>>=
   {%
     % #1: new value
     % #2: next value
@@ -102,10 +102,10 @@
         \inso@S@insert@a{#1}%
       }%
   }%=<<
-\protected\long\def\inso@S@insert#1#2%>>=
+\long\def\inso@S@insert#1#2%>>=
   {%
     \def\inso@S@tmp{}%
-    \inso@S@insert@a{#2}#1\inso@qmark\inso@qmark\inso@qmark\inso@qstop
+    \inso@S@insert@a{#2}#1\inso@qmark\inso@qstop
   }%=<<
 \long\def\inso@S@sort#1,%>>=
   {%
@@ -113,16 +113,21 @@
       {\inso@blankelementerror}%
       {%
         \ifx\inso@qmark#1%
-          \inso@fi@gobbleuntilqstop
+          \inso@fi@gobbletoqstop
         \fi
         \expandafter\inso@S@insert\expandafter{\inso@S@sorted}{#1}%
       }%
     \inso@S@sort
   }%=<<
+\long\def\inso@S@startsort#1,%>>=
+  {%
+    \def\inso@S@sorted{{#1}}%
+    \inso@S@sort
+  }%=<<
 \long\def\inso@S@clistize@#1%>>=
   {%
     \ifx\inso@qmark#1%
-      \inso@fi@gobbletwo
+      \inso@fi@gobble
     \fi
     \inso@firstofone
     {%
@@ -137,9 +142,7 @@
   }%=<<
 \protected\long\def\inso@S@insertionsort#1%>>=
   {%
-    \edef\inso@S@sorted{{\inso@getfirst#1,\inso@qstop}}%
-    \expandafter\inso@S@sort
-      \romannumeral-`0\inso@gobblefirst#1,\inso@qnil,\inso@qmark,\inso@qstop
+    \inso@S@startsort#1,\inso@qmark,\inso@qstop
     \edef\inso@S@sorted{\expandafter\inso@S@clistize\inso@S@sorted\inso@qmark}%
   }%=<<
 \protected\long\def\insertionsortS#1#2%>>=

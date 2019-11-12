@@ -35,46 +35,39 @@
 % define the latex equivalents of some small things
 \long\def\inso@gobble#1{}
 \long\def\inso@firstofone#1{#1}
-\long\def\inso@firstoftwo#1#2{#1}
-\long\def\inso@secondoftwo#1#2{#2}
+\long\def\inso@firstoftwo#1#2{#1}  % don't remove, used in documentation
+\long\def\inso@secondoftwo#1#2{#2} % don't remove, used in documentation
+\long\def\inso@secondofthree#1#2#3{#2}
 
 % define some logic helper functions, those are generally faster than their
 % \expandafter equivalents
-\long\def\inso@fi@gobbletwo\fi#1#2{\fi}
-\long\def\inso@fi@secondofthree\fi#1#2#3{\fi#2}
-\long\def\inso@fi@thirdofthree\fi#1#2#3{\fi#3}
-\long\def\inso@fi@gobbleuntilqstop\fi#1\inso@qstop{\fi}
+\long\def\inso@fi@gobble      \fi \inso@firstofone  #1{\fi}
+\long\def\inso@fi@firstofone  \fi \inso@gobble      #1{\fi#1}
+\long\def\inso@fi@firstoftwo  \fi \inso@secondoftwo #1#2{\fi#1}
+\long\def\inso@fi@secondoftwo \fi \inso@firstoftwo  #1#2{\fi#2}
+\long\def\inso@fi@gobbletoqstop\fi#1\inso@qstop{\fi}
 
-% function to get the first value of the clist
-\long\def\inso@getfirst#1,#2\inso@qstop{\unexpanded{#1}}
-% function to gobble the first value of clist, call with trailing ',\inso@qnil'
-\long\def\inso@gobblefirst#1,{\inso@gobblefirst@a,}
-% function to remove a trailing ',\inso@qnil', call it with leading ','
-\long\def\inso@gobblefirst@a#1,\inso@qnil{\inso@gobblefirst@b#1}
-% remove the leading ',' end the \romannumeral
-\def\inso@gobblefirst@b,{ }
 % function to test whether argument is blank
 \long\def\inso@ifblank#1%>>=
   {%
     \if\relax\detokenize\expandafter{\inso@gobble #1.}\relax
-      \inso@fi@secondofthree
+      \inso@fi@firstoftwo
     \fi
     \inso@secondoftwo
   }%=<<
-% Test which case of \inso@ifdimen should be applied.
+% this will only be expanded if the argument of \inso@ifdimen is no dimen, if so
+% provide a unit and rearrange the branches so that the false branch will be
+% called by \inso@secondofthree
+\def\inso@ifdimen@false{\inso@z@.\inso@firstofone}
+% non-expandable test whether TeX understands something as a dimension; #1 must
+% be either a number or a dimension. The arguments to \inso@secondofthree will
+% be:
 %  1. If the argument to \inso@ifdimen is a dimension:
 %     #1=\inso@ifdimen@false, #2=<true>, #3=<false>
 %  2. If the argument to \inso@ifdimen is an integer or float:
-%     #1=., #2=<false>, #3=.
-\long\def\inso@ifdimen@test#1#2#3{#2}
-% this will only be expanded if the argument of \inso@ifdimen is no dimen, if so
-% provide a unit and rearrange the branches so that the false branch will be
-% called by \inso@ifdimen@test
-\long\def\inso@ifdimen@false#1#2{\inso@z@.{#2}.}
-% non-expandable test whether TeX understands something as a dimension; #1 must
-% be either a number or a dimension
-\protected\long\def\inso@ifdimen#1%
+%     #1=., #2=\inso@firstofone, #3=<true>
+\protected\long\def\inso@ifdimen#1%>>=
   {%
-    \afterassignment\inso@ifdimen@test
+    \afterassignment\inso@secondofthree
     \inso@gobbledimen #1 \inso@ifdimen@false
-  }
+  }%=<<

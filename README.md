@@ -198,22 +198,39 @@ value (e.g., `\inso@unit=2pt`), but don't redefine it, it is important that
 
 One can define slightly faster branching if-tests without using `\expandafter`
 but with the following macros. In the following examples `\if...` is replaceable
-by any TeX-syntax if-test.
+by any TeX-syntax if-test. For the `\inso@fi@...` macros the next tokens must be
+`\fi` and the corresponding `\inso@...` macro.
 
 1. If the test is true use the first branch, else the second:
     ```latex
     \if...
-      \inso@fi@secondofthree
+      \inso@fi@firstoftwo
     \fi
-    \@secondoftwo
+    \inso@secondoftwo
     ```
 
 1. If the test is true use the second branch, else the first:
     ```latex
     \if...
-      \inso@fi@thirdofthree
+      \inso@fi@secondoftwo
     \fi
-    \@firstoftwo
+    \inso@firstoftwo
+    ```
+
+1. If the test is true use the next brach, else gobble it:
+    ```latex
+    \if...
+      \inso@fi@firstofone
+    \fi
+    \inso@gobble
+    ```
+
+1. If the test is true gobble the next brach, else use it:
+    ```latex
+    \if...
+      \inso@fi@gobble
+    \fi
+    \inso@firstofone
     ```
 
 Example: Define the integer comparison test for `\inso@S@ifsmaller` from
@@ -223,9 +240,9 @@ Example: Define the integer comparison test for `\inso@S@ifsmaller` from
 \long\def\inso@S@ifsmaller#1#2%
   {%
     \ifnum#1<#2\relax
-      \inso@fi@secondofthree
+      \inso@fi@firstoftwo
     \fi
-    \@secondoftwo
+    \inso@secondoftwo
   }
 ```
 
