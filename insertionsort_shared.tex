@@ -28,16 +28,15 @@
   }%=<<
 
 % define some quarks for testing and delimiting
-\def\inso@qnil{\inso@qnil}
+\def\inso@qnil {\inso@qnil}
 \def\inso@qmark{\inso@qmark}
 \def\inso@qstop{\inso@qstop}
 
 % define the latex equivalents of some small things
-\long\def\inso@gobble#1{}
-\long\def\inso@firstofone#1{#1}
+\long\def\inso@gobble#1{}          % don't remove, used in documentation
+\long\def\inso@firstofone#1{#1}    % don't remove, used in documentation
 \long\def\inso@firstoftwo#1#2{#1}  % don't remove, used in documentation
 \long\def\inso@secondoftwo#1#2{#2} % don't remove, used in documentation
-\long\def\inso@secondofthree#1#2#3{#2}
 
 % define some logic helper functions, those are generally faster than their
 % \expandafter equivalents
@@ -55,19 +54,20 @@
     \fi
     \inso@secondoftwo
   }%=<<
+\long\def\inso@ifdimen@branch\inso@ifdimen@false#1#2{#1}
 % this will only be expanded if the argument of \inso@ifdimen is no dimen, if so
 % provide a unit and rearrange the branches so that the false branch will be
-% called by \inso@secondofthree
-\def\inso@ifdimen@false{\inso@z@.\inso@firstofone}
+% called by \inso@ifdimen@branch
+\def\inso@ifdimen@false{\inso@z@\inso@ifdimen@false\inso@firstofone}
 % non-expandable test whether TeX understands something as a dimension; #1 must
-% be either a number or a dimension. The arguments to \inso@secondofthree will
+% be either a number or a dimension. The arguments to \inso@ifdimen@branch will
 % be:
 %  1. If the argument to \inso@ifdimen is a dimension:
-%     #1=\inso@ifdimen@false, #2=<true>, #3=<false>
+%     #1=<true>, #2=<false>
 %  2. If the argument to \inso@ifdimen is an integer or float:
-%     #1=., #2=\inso@firstofone, #3=<true>
+%     #1=\inso@firstofone, #2=<true>
 \protected\long\def\inso@ifdimen#1%>>=
   {%
-    \afterassignment\inso@secondofthree
+    \afterassignment\inso@ifdimen@branch
     \inso@gobbledimen #1 \inso@ifdimen@false
   }%=<<
