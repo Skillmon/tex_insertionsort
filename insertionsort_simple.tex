@@ -75,12 +75,14 @@
         {#2\inso@unit}%
       }%
   }%=<<
-\long\def\inso@S@insert@last#1\fi#2\inso@qstop%>>=
+\long\def\inso@S@insert@last% evil definition! >>=
+  #1\fi\inso@S@ifsmaller#2\inso@qstop
   {%
     \fi
     \edef\inso@S@sorted{\unexpanded\expandafter{\inso@S@sorted{#1}}}%
   }%=<<
-\long\def\inso@S@insert@place#1#2\inso@qmark\inso@qstop%>>=
+\long\def\inso@S@insert@place% evil definition! >>=
+  #1#2\inso@qmark\inso@qstop
   {%
     \edef\inso@S@sorted
       {%
@@ -93,10 +95,10 @@
     % #1: new value
     % #2: next value
     \ifx\inso@qmark#2%
-      \inso@S@insert@last{#1}%
+      \inso@S@insert@last{#1}% evil definition, watch out!
     \fi
     \inso@S@ifsmaller{#1}{#2}%
-      {\inso@S@insert@place{#1}.{#2}}%
+      {\inso@S@insert@place{#1}.{#2}}% evil definition, watch out!
       {%
         \edef\inso@S@tmp{\unexpanded\expandafter{\inso@S@tmp{#2}}}%
         \inso@S@insert@a{#1}%
@@ -104,22 +106,25 @@
   }%=<<
 \long\def\inso@S@insert#1#2%>>=
   {%
-    \def\inso@S@tmp{}%
+    \let\inso@S@tmp\inso@empty
     \inso@S@insert@a{#2}#1\inso@qmark\inso@qstop
   }%=<<
-\long\def\inso@S@fi@gobblesort%>>=
+\long\def\inso@S@fi@gobblesort% evil definition! >>=
   \fi\expandafter\inso@S@insert\expandafter#1\inso@S@sort
   {\fi}%=<<
+\long\def\inso@S@blankelement% evil definition! >>=
+  \fi\ifx\inso@qmark#1\inso@S@fi@gobblesort\fi\expandafter\inso@S@insert
+  \expandafter#2\inso@S@sort
+  {\inso@blankelementerror\inso@S@sort}%=<<
 \long\def\inso@S@sort#1,%>>=
   {%
-    \inso@ifblank{#1}%
-      {\inso@blankelementerror}%
-      {%
-        \ifx\inso@qmark#1%
-          \inso@S@fi@gobblesort % evil definition, watch out!
-        \fi
-        \expandafter\inso@S@insert\expandafter{\inso@S@sorted}{#1}%
-      }%
+    \inso@qdifblank#1\inso@qstop
+      \inso@S@blankelement % evil definition, watch out!
+    \fi
+    \ifx\inso@qmark#1%
+      \inso@S@fi@gobblesort % evil definition, watch out!
+    \fi
+    \expandafter\inso@S@insert\expandafter{\inso@S@sorted}{#1}%
     \inso@S@sort
   }%=<<
 \long\def\inso@S@startsort#1,%>>=

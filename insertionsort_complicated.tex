@@ -52,6 +52,8 @@
 
 \input "insertionsort_shared.tex"
 
+\newdimen\inso@C@value@dim
+
 % define a function that extracts the value for which will be sorted from your
 % data structure
 \long\def\inso@C@getvalue#1%>>=
@@ -60,62 +62,71 @@
       {\def\inso@C@value{#1}}
       {\def\inso@C@value{#1\inso@unit}}%
   }%=<<
-\long\def\inso@C@ifsmaller#1#2%>>=
+\long\def\inso@C@ifsmaller#1%>>=
   {%
-    \ifdim#1<#2\relax
+    \ifdim\inso@C@value@dim<#1\relax
       \inso@fi@firstoftwo
     \fi
     \inso@secondoftwo
   }%=<<
-\long\def\inso@C@insert@last#1\fi\inso@C@ifsmaller#2\inso@qstop#3%>>=
+\long\def\inso@C@insert@last% evil definition! >>=
+  \fi\inso@C@ifsmaller#1\inso@qstop#2%
   {%
     \fi
-    \edef\inso@C@sorted{\unexpanded\expandafter{\inso@C@sorted{#1}{#3}}}%
-  }%=<<
-\long\def\inso@C@insert@place#1#2\inso@qmark\inso@qmark\inso@qstop#3%>>=
-  {%
-    \edef\inso@C@sorted{\unexpanded\expandafter{\inso@C@tmp{#1}{#3}#2}}%
-  }%=<<
-\long\def\inso@C@insert@b#1#2#3%>>=
-  {%
-    % #1: new value
-    % #2: next value
-    % #3: next element
-    \ifx\inso@qmark#3%
-      \inso@C@insert@last{#1}%
-    \fi
-    \inso@C@ifsmaller{#1}{#2}%
-      {\inso@C@insert@place{#1}{#2}{#3}}%
+    \edef\inso@C@sorted
       {%
-        \edef\inso@C@tmp{\unexpanded\expandafter{\inso@C@tmp{#2}{#3}}}%
-        \inso@C@insert@b{#1}%
+        \unexpanded\expandafter{\inso@C@sorted}%
+        {\unexpanded\expandafter{\inso@C@value}}%
+        \unexpanded{{#2}}%
       }%
   }%=<<
-\long\def\inso@C@insert@a#1#2%>>=
+\long\def\inso@C@insert@place% evil definition! >>=
+  #1\inso@qmark\inso@qmark\inso@qstop#2%
   {%
-    \def\inso@C@tmp{}%
-    \inso@C@insert@b{#2}#1\inso@qmark\inso@qmark\inso@qstop
+    \edef\inso@C@sorted
+      {%
+        \unexpanded\expandafter{\inso@C@tmp}%
+        {\unexpanded\expandafter{\inso@C@value}}%
+        \unexpanded{{#2}#1}%
+      }%
   }%=<<
 \long\def\inso@C@insert#1#2%>>=
   {%
-    % #1: value in dimen
-    % #2: full element
-    \expandafter\inso@C@insert@a\expandafter{\inso@C@sorted}{#1}{#2}%
+    % #1: next value
+    % #2: next element
+    \ifx\inso@qmark#2%
+      \inso@C@insert@last % evil definition, watch out!
+    \fi
+    \inso@C@ifsmaller{#1}%
+      {\inso@C@insert@place{#1}{#2}}% evil definition, watch out!
+      {%
+        \edef\inso@C@tmp{\unexpanded\expandafter{\inso@C@tmp{#1}{#2}}}%
+        \inso@C@insert
+      }%
   }%=<<
-\long\def\inso@C@fi@gobblesort%>>=
-  \fi\inso@C@getvalue#1\expandafter\inso@C@insert\expandafter#2\inso@C@sort
+\long\def\inso@C@fi@gobblesort% evil definition! >>=
+  \fi\inso@C@getvalue#1\inso@C@value@dim\inso@C@value\let\inso@C@tmp\inso@empty
+  \expandafter\inso@C@insert\inso@C@sorted\inso@qmark\inso@qmark\inso@qstop#2%
+  \inso@C@sort
   {\fi}%=<<
+\long\def\inso@C@blankelement% evil definition! >>=
+  \fi\ifx\inso@qmark#1\inso@C@fi@gobblesort\fi\inso@C@getvalue#2%
+  \inso@C@value@dim\inso@C@value\let\inso@C@tmp\inso@empty\expandafter
+  \inso@C@insert\inso@C@sorted\inso@qmark\inso@qmark\inso@qstop#3\inso@C@sort
+  {\fi\inso@blankelementerror\inso@C@sort}%=<<
 \long\def\inso@C@sort#1,%>>=
   {%
-    \inso@ifblank{#1}%
-      {\inso@blankelementerror}%
-      {%
-        \ifx\inso@qmark#1%
-          \inso@C@fi@gobblesort % evil definition, watch out!
-        \fi
-        \inso@C@getvalue{#1}%
-        \expandafter\inso@C@insert\expandafter{\inso@C@value}{#1}%
-      }%
+    \inso@qdifblank#1\inso@qstop
+      \inso@C@blankelement % evil definition, watch out!
+    \fi
+    \ifx\inso@qmark#1%
+      \inso@C@fi@gobblesort % evil definition, watch out!
+    \fi
+    \inso@C@getvalue{#1}%
+    \inso@C@value@dim\inso@C@value
+    \let\inso@C@tmp\inso@empty
+    \expandafter
+      \inso@C@insert\inso@C@sorted\inso@qmark\inso@qmark\inso@qstop{#1}%
     \inso@C@sort
   }%=<<
 \long\def\inso@C@startsort#1,%>>=

@@ -37,6 +37,7 @@
 \long\def\inso@firstofone#1{#1}    % don't remove, used in documentation
 \long\def\inso@firstoftwo#1#2{#1}  % don't remove, used in documentation
 \long\def\inso@secondoftwo#1#2{#2} % don't remove, used in documentation
+\def\inso@empty{}
 
 % define some logic helper functions, those are generally faster than their
 % \expandafter equivalents
@@ -53,7 +54,14 @@
     \fi
     \inso@secondoftwo
   }%=<<
-\long\def\inso@ifdimen@branch\inso@ifdimen@false#1#2{#1}
+% helper function for a quick and dirty ifblank test
+\long\def\inso@qdifblank#1%>>=
+  {%
+    \ifx\inso@qstop#1%
+  }%=<<
+\long\def\inso@ifdimen@branch% evil definition! >>=
+  \inso@ifdimen@false#1#2%
+  {#1}%=<<
 % this will only be expanded if the argument of \inso@ifdimen is no dimen, if so
 % provide a unit and rearrange the branches so that the false branch will be
 % called by \inso@ifdimen@branch
@@ -67,6 +75,6 @@
 %     #1=\inso@firstofone, #2=<true>
 \protected\long\def\inso@ifdimen#1%>>=
   {%
-    \afterassignment\inso@ifdimen@branch
+    \afterassignment\inso@ifdimen@branch % evil definition, watch out!
     \inso@gobbledimen #1 \inso@ifdimen@false
   }%=<<
