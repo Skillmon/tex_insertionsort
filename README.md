@@ -51,7 +51,8 @@ In both versions the defaults of those two macros
 that you can sort lists of integers, floats, and dimensions, even if you mix
 those, but the test to achieve this flexibility is optimized to be fast, not to
 be rock-stable, so input which is neither of those will most likely throw errors
-or in the worst case might break things and produce erroneous output.
+or in the worst case might break things and produce erroneous output (an example
+of such a malevolent argument would be `1pt `, note the space at the end).
 
 ### Simple Version<a name="simple"/>
 
@@ -137,12 +138,13 @@ as the comparison is done using an `\ifdim` test. The list is sorted ascending
 respective of these values.
 
 For example to sort a list of integers and/or floats, you'd use something like
-the following:
+the following, utilizing the fact that getting the multiple of a dimen of 1pt is
+faster than appending the letters pt:
 
 ```latex
 \long\def\inso@C@getvalue#1%
   {%
-    \def\inso@C@value{#1pt}%
+    \def\inso@C@value{#1\inso@unit}%
   }
 ```
 
