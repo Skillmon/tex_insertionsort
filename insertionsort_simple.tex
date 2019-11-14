@@ -107,13 +107,16 @@
     \def\inso@S@tmp{}%
     \inso@S@insert@a{#2}#1\inso@qmark\inso@qstop
   }%=<<
+\long\def\inso@S@fi@gobblesort%>>=
+  \fi\expandafter\inso@S@insert\expandafter#1\inso@S@sort
+  {\fi}%=<<
 \long\def\inso@S@sort#1,%>>=
   {%
     \inso@ifblank{#1}%
       {\inso@blankelementerror}%
       {%
         \ifx\inso@qmark#1%
-          \inso@fi@gobbletoqstop
+          \inso@S@fi@gobblesort % evil definition, watch out!
         \fi
         \expandafter\inso@S@insert\expandafter{\inso@S@sorted}{#1}%
       }%
@@ -142,7 +145,7 @@
   }%=<<
 \protected\long\def\inso@S@insertionsort#1%>>=
   {%
-    \inso@S@startsort#1,\inso@qmark,\inso@qstop
+    \inso@S@startsort#1,\inso@qmark,%
     \edef\inso@S@sorted{\expandafter\inso@S@clistize\inso@S@sorted\inso@qmark}%
   }%=<<
 \protected\long\def\insertionsortS#1#2%>>=

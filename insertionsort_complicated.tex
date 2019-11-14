@@ -67,7 +67,7 @@
     \fi
     \inso@secondoftwo
   }%=<<
-\long\def\inso@C@insert@last#1\fi#2\inso@qstop#3%>>=
+\long\def\inso@C@insert@last#1\fi\inso@C@ifsmaller#2\inso@qstop#3%>>=
   {%
     \fi
     \edef\inso@C@sorted{\unexpanded\expandafter{\inso@C@sorted{#1}{#3}}}%
@@ -102,13 +102,16 @@
     % #2: full element
     \expandafter\inso@C@insert@a\expandafter{\inso@C@sorted}{#1}{#2}%
   }%=<<
+\long\def\inso@C@fi@gobblesort%>>=
+  \fi\inso@C@getvalue#1\expandafter\inso@C@insert\expandafter#2\inso@C@sort
+  {\fi}%=<<
 \long\def\inso@C@sort#1,%>>=
   {%
     \inso@ifblank{#1}%
       {\inso@blankelementerror}%
       {%
         \ifx\inso@qmark#1%
-          \inso@fi@gobbletoqstop
+          \inso@C@fi@gobblesort % evil definition, watch out!
         \fi
         \inso@C@getvalue{#1}%
         \expandafter\inso@C@insert\expandafter{\inso@C@value}{#1}%
@@ -140,7 +143,7 @@
   }%=<<
 \protected\long\def\inso@C@insertionsort#1%>>=
   {%
-    \inso@C@startsort#1,\inso@qmark,\inso@qstop
+    \inso@C@startsort#1,\inso@qmark,%
     \edef\inso@C@sorted
       {\expandafter\inso@C@clistize\inso@C@sorted\inso@qmark\inso@qmark}%
   }%=<<
