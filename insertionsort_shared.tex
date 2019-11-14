@@ -46,13 +46,16 @@
 \long\def\inso@fi@firstoftwo  \fi \inso@secondoftwo #1#2{\fi#1}
 \long\def\inso@fi@secondoftwo \fi \inso@firstoftwo  #1#2{\fi#2}
 
-% function to test whether argument is blank
-\long\def\inso@ifblank#1%>>=
+% fast ifblank>>=
+\begingroup
+\catcode`\?=11
+\inso@firstofone
   {%
-    \if\relax\detokenize\expandafter{\inso@gobble #1.}\relax
-      \inso@fi@firstoftwo
-    \fi
-    \inso@secondoftwo
+    \endgroup
+    \long\def\inso@fastifblank#1#2\inso@fastifblank?endarg
+      {%
+        \if\relax\detokenize{#2}\relax
+      }%
   }%=<<
 % helper function for a quick and dirty ifblank test
 \long\def\inso@qdifblank#1%>>=

@@ -153,30 +153,38 @@
     \inso@S@startsort#1,\inso@qmark,%
     \edef\inso@S@sorted{\expandafter\inso@S@clistize\inso@S@sorted\inso@qmark}%
   }%=<<
-\protected\long\def\insertionsortS#1#2%>>=
+% define the user facing macros >>=
+\begingroup
+\catcode`\?=11
+\inso@firstofone
   {%
-    \inso@ifblank{#2}%
-      {\def#1{}}%
+    \endgroup
+    \protected\long\def\insertionsortS#1#2%>>=
       {%
-        \begingroup
-          \inso@S@insertionsort{#2}%
-        \expandafter
-        \endgroup
-        \expandafter\def\expandafter#1\expandafter{\inso@S@sorted}%
-      }%
-  }%=<<
-\protected\long\def\InsertionsortS#1#2#3%>>=
-  {%
-    \inso@ifblank{#3}%
-      {\def#2{}}%
+        \inso@fastifblank#2.\inso@fastifblank?endarg
+          \let#1\inso@empty
+        \else
+          \begingroup
+            \inso@S@insertionsort{#2}%
+          \expandafter
+          \endgroup
+          \expandafter\def\expandafter#1\expandafter{\inso@S@sorted}%
+        \fi
+      }%=<<
+    \protected\long\def\InsertionsortS#1#2#3%>>=
       {%
-        \begingroup
-          \long\def\inso@S@ifsmaller##1##2{#1}%
-          \inso@S@insertionsort{#3}%
-        \expandafter
-        \endgroup
-        \expandafter\def\expandafter#2\expandafter{\inso@S@sorted}%
-      }%
-  }%=<<
+        \inso@fastifblank#3.\inso@fastifblank?endarg
+          \let#2\inso@empty
+        \else
+          \begingroup
+            \long\def\inso@S@ifsmaller##1##2{#1}%
+            \inso@S@insertionsort{#3}%
+          \expandafter
+          \endgroup
+          \expandafter\def\expandafter#2\expandafter{\inso@S@sorted}%
+        \fi
+      }%=<<
+  }
+%=<<
 
 \catcode`\@=\inso@atcatcode
