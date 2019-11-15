@@ -34,7 +34,11 @@ calculated, e.g., your list contains vectors and you want to sort them by their
 lengths. It uses more tokens in a temporary macro.
 
 For a bit more about which version is faster, see
-[Speed Considerations](#speed).
+[Speed Considerations](#speed). For a more detailed comparison you can take a
+look at the plots shown in the
+[wiki](https://github.com/Skillmon/tex_insertionsort/wiki/Performance-Comparisons),
+there is also a comparison to the `l3sort` of `expl3` and the sorting of
+`lambda.sty` contained.
 
 You can use both versions in parallel.
 
